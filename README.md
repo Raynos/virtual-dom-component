@@ -16,50 +16,40 @@ Install the module with: `npm install virtual-dom-component`
 ## Usage
 
 ```javascript
-var VirtualComponent = require('virtual-dom-component');
 var h = require('virtual-hyperscript');
 
-var Profile = VirtualComponent(function(state) {
+var Profile = function(state) {
   return h('div', null,
     h('h1', null, state.name),
     h('img', { src: state.avatarURL })
   );
-});
+};
 
 // with local state
-var Profile = VirtualComponent({
-  locals: {
-    fullName: function(first, last) {
-      return [first, last].join(' ');
-    },
-    url: function(gid) {
-      return 'https://gravatar.com/' + gid;
-    }
+var Profile = function(state) {
+  return h('div', null,
+    h('h1', null, state.name)),
+    h('img', { src: this.url(state.gid) })
+  );
+}.bind({
+  fullName: function(first, last) {
+    return [first, last].join(' ');
   },
-  render: function(state) {
-    return h('div', null,
-      h('h1', null, state.name)),
-      h('img', { src: this.url(state.gid) })
-    );
+  url: function(gid) {
+    return 'https://gravatar.com/' + gid;
   }
 });
 
 // using JSX
-var Profile = VirtualComponent(function(state) {
+var Profile = function(state) {
   return <div>
     <h1>{state.name}</h1>
     <img src={state.avatarURL } />
   </div>;
-});
+};
 
-// using constructor and instance
-var Profile = new VirtualComponent({
-  render: function(state) {
-    // ...
-  }
-});
 
-var vNode = Profile.render(state);
+var vNode = Profile(state);
 ```
 
 ## Contributing
